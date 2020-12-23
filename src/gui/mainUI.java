@@ -67,7 +67,7 @@ public class mainUI extends JFrame {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
         mainFrame.add(mainPanel);
-
+        //为按钮添加监听器
         loginCheck = new loginListener(userName,userPassword);
         login.addActionListener(loginCheck);
         quit.addActionListener(loginCheck);
