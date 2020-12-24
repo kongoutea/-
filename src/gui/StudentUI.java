@@ -1,10 +1,13 @@
 package gui;
 
-import actListen.userListener;
+import model.User;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class StudentUI extends JFrame {
+public class StudentUI extends JFrame implements ActionListener {
     //学生用户界面
     JFrame studentFrame;
     JPanel studentPanel;
@@ -12,9 +15,15 @@ public class StudentUI extends JFrame {
     JButton checkGrade;
     JButton changePassword;
     JButton exit;
-    userListener studentListener;
 
-    public StudentUI() {
+    String studentID;
+    String studentPassword;
+
+    public StudentUI(User student) {
+        //学生用户的界面
+        studentID = student.getUid();
+        studentPassword = student.getPassword();
+
         studentFrame = new JFrame("学生成绩管理系统");
         studentFrame.setSize(600,400);
 
@@ -49,11 +58,26 @@ public class StudentUI extends JFrame {
         studentFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         studentFrame.setVisible(true);
         studentFrame.add(studentPanel);
+        studentFrame.setLocationRelativeTo(null);
 
-        studentListener = new userListener();
-        checkGrade.addActionListener(studentListener);
-        changePassword.addActionListener(studentListener);
-        exit.addActionListener(studentListener);
+        checkGrade.addActionListener(this);
+        changePassword.addActionListener(this);
+        exit.addActionListener(this);
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //按钮的事件监听
+        String buttonName = e.getActionCommand();
+        if(buttonName.equals("退出")) {
+            System.exit(0);
+        }
+        else if(buttonName.equals("查询成绩")) {
+
+        }
+        else if(buttonName.equals("修改密码")) {
+            new ChangePasswordUI();
+        }
     }
 }
