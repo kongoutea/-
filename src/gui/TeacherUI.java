@@ -64,10 +64,10 @@ public class TeacherUI extends JFrame implements ActionListener {
             System.exit(0);
         }
         else if(buttonName.equals("所有成绩")) {
-
+            new showAllGrades();
         }
         else if(buttonName.equals("学生信息")) {
-
+            new showAllStudents();
         }
     }
 }

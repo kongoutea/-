@@ -1,11 +1,9 @@
 package database;
 
-import model.User;
+import model.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.transform.Result;
+import java.sql.*;
 
 public class DbOperation {
     //数据库操作
@@ -26,38 +24,91 @@ public class DbOperation {
         return null;
     }
 
-    public void showGrade(Connection con, User user) throws Exception {
+    public String[][] showGrade(Connection con, String userName) throws Exception {
         //查询成绩
+        String sql = "select * from grade where userId = '"+userName+"'";
+        PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet result = stmt.executeQuery();
 
+        String[][] record;
+        result.last();
+        int count = result.getRow();
+        int i = 0;
+        record = new String[count][3];
+        result.beforeFirst();
+        while(result.next()) {
+            for(int j = 0; j < 3; j++) {
+                record[i][j] = result.getString(j+1);
+            }
+            i++;
+        }
+        return record;
     }
 
-    public boolean changePw(Connection con, User user, String newPw) throws Exception {
+    public boolean changePw(Connection con, String userId, String newPw) throws Exception {
         //修改密码
-        String sql = "update user set pw = ? where uid = ?";
+        String sql = "update user set pw = '"+newPw+"' where uid = '"+userId+"'";
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1,user.getUid());
-        stmt.setString(2,newPw);
-        ResultSet result = stmt.executeQuery();
-        if(result.next()) {
+        int result = stmt.executeUpdate(sql);
+        if(result > 0) {
             return true;
         }
-        return false;
-    }
-    public void showAllStudent(Connection con, User users[]) throws Exception {
-        //获取所有学生信息
-        String sql = "select * from user where permission = 0";
-        PreparedStatement stmt = con.prepareStatement(sql);
-        ResultSet result = stmt.executeQuery();
-        int i = 0;
-        while(result.next()) {
-            String resultUid = result.getString("uid");
-            String resultPassword = result.getString("pw");
-
+        else{
+            return false;
         }
     }
+    public String[][] showAllStudent(Connection con) throws Exception {
+        //获取所有学生信息
+        String sql = "select * from user where permission = 0";
+        PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet result = stmt.executeQuery();
 
-    public void showAllGrade(Connection con) throws Exception {
+        String[][] record;
+        result.last();
+        int count = result.getRow();
+        int i = 0;
+        record = new String[count][2];
+        result.beforeFirst();
+        while(result.next()) {
+            for(int j = 0; j < 2; j++) {
+                record[i][j] = result.getString(j+1);
+            }
+            i++;
+        }
+        return record;
+    }
+
+    public String[][] showAllGrade(Connection con) throws Exception {
         //查询所有成绩
+        String sql = "select * from grade";
+        PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet result = stmt.executeQuery();
 
+        String[][] record;
+        result.last();
+        int count = result.getRow();
+        int i = 0;
+        record = new String[count][3];
+        result.beforeFirst();
+        while(result.next()) {
+            for(int j = 0; j < 3; j++) {
+                record[i][j] = result.getString(j+1);
+            }
+            i++;
+        }
+        return record;
+    }
+
+    public boolean inputGrade(Connection con, Course course) throws SQLException {
+        //录入成绩
+        String sql = "insert into grade values ('"+course.getStudentId()+"','"+course.getCourseId()+"','"+course.getCourseGrade()+"')";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        int result = stmt.executeUpdate();
+        if(result > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

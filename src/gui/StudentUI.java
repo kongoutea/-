@@ -74,10 +74,10 @@ public class StudentUI extends JFrame implements ActionListener {
             System.exit(0);
         }
         else if(buttonName.equals("查询成绩")) {
-
+            new showGrades(studentID);
         }
         else if(buttonName.equals("修改密码")) {
-            new ChangePasswordUI();
+            new ChangePasswordUI(studentID, studentPassword);
         }
     }
 }

@@ -9,6 +9,9 @@ import database.*;
 
 public class ChangePasswordUI extends JFrame implements ActionListener {
     //用户修改密码
+    String userID;
+    String userPw;
+
     JFrame pwFrame;
     JPanel pwPanel;
     JButton Confirm;
@@ -17,10 +20,13 @@ public class ChangePasswordUI extends JFrame implements ActionListener {
     JPasswordField confirmPw;
     JLabel new_pw_label;
     JLabel confirm_pw_label;
-    DbOperation changePwOperation;
-    DbUtil dbUtil;
+    DbOperation changePwOpt = new DbOperation();
+    DbUtil dbUtil = new DbUtil();
 
-    public ChangePasswordUI() {
+    public ChangePasswordUI(String id, String password) {
+        userID = id;
+        userPw = password;
+
         pwFrame = new JFrame("修改密码");
         pwFrame.setSize(400,250);
 
@@ -52,7 +58,7 @@ public class ChangePasswordUI extends JFrame implements ActionListener {
         pwPanel.add(Cancel);
 
         pwFrame.setLayout(null);
-        pwFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        pwFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pwFrame.add(pwPanel);
         pwFrame.setVisible(true);
         pwFrame.setLocationRelativeTo(null);
@@ -67,13 +73,29 @@ public class ChangePasswordUI extends JFrame implements ActionListener {
             pwFrame.dispose();
         }
         else if(buttonName.equals("确认")) {
-
-            Connection con = null;
-            try{
-                con = dbUtil.getConnect();
-
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            String newPassword = newPw.getText();
+            String cf_Pw = String.valueOf(confirmPw.getPassword());
+            System.out.println(newPassword+" "+cf_Pw+" "+userPw);
+            if(newPassword.equals(cf_Pw) && !newPassword.equals(userPw)) {
+                Connection con = null;
+                try {
+                    con = dbUtil.getConnect();
+                    boolean success = changePwOpt.changePw(con, userID, newPassword);
+                    if(success) {
+                        JOptionPane.showMessageDialog(null,"密码修改成功！");
+                        pwFrame.dispose();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"密码修改失败，请联系管理员");
+                        return ;
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"密码不一致或与原密码相同！");
+                return ;
             }
         }
     }
