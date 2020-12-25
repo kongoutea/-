@@ -111,4 +111,16 @@ public class DbOperation {
             return false;
         }
     }
+
+    public boolean inputStudent(Connection con, User user) throws SQLException {
+        String sql = "insert into user values ('"+user.getUid()+"','"+user.getPassword()+"','0')";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        int result = stmt.executeUpdate();
+        if(result > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

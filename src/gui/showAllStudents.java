@@ -77,7 +77,7 @@ public class showAllStudents extends JFrame implements ActionListener {
             new showAllStudents();
         }
         else if(buttonName.equals("录入")) {
-
+            new InputStudentUI();
         }
     }
 }
